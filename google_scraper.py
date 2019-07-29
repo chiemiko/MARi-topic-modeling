@@ -92,6 +92,10 @@ if __name__ == '__main__':
     for city in cities:
         for role in roles:
             url =get_url(city, role)
+            print('link:')
             print(url)
+            print()
             soup = get_names(url)
+            print('soup obhect: ')
             print(soup)
+            print()
