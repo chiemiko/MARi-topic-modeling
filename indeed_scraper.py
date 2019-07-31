@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import urllib.request
 import re
 import pandas as pd
+from datetime import datetime
 
 
 class AppURLopener(urllib.request.FancyURLopener):
@@ -103,9 +104,7 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
         company = item.text[21:len(item.text)]
 
     
-    '''Extraction of position titles
-    for item in soup1.find_all('h3', attrs = {'class': 'icl-u-xs-mb--xs icl-u-xs-mt--none jobsearch-JobInfoHeader-title'}):
-    print(item.text)'''
+    '''Extraction of position titles'''
     
     title = soup.title.text.split('-')[0]
     
@@ -117,15 +116,19 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
     for item in soup.find_all('div', attrs = {'class': 'jobsearch-JobMetadataFooter'}):
         #print(item.text.split('-'))
         for item in item.text.split('-'):
-            if 'day' in item:
-                #print('date')
+            if 'today' in item or 'minute' in item or 'hour' in item or 'just posted' in item:
+                post_date = '0'
+            
+            elif 'day' in item:
                 post_date = item.split()[0]
-                
+                            
     '''Extraction of full job post'''
-
+    description = []
     for item in soup.findAll('div', attrs={'class': 'jobsearch-jobDescriptionText'}):
         for tag in item:
-            description = tag    
+
+            description.append(tag)
+   
     
     return company, title, location, post_date, description
 
@@ -191,5 +194,9 @@ if __name__ == '__main__':
             })
 
             print(df)
+            frames = [df_main, df]
+            df_main = pd.concat(frames)
+
+    df_main.to_csv('data/indeed-' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
                         
 
