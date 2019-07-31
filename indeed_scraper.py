@@ -83,10 +83,7 @@ def get_url(city, role):
         search_role = search_role + '+' + word
     search_role = search_role[1:len(search_role)]
     url = f'https://www.indeed.com/jobs?q={search_role}&l={location_string}'
-    #print(url)
-    #https://www.indeed.com/jobs?q=data+scientist&l=new+york%2C+new+york
-    #https://www.indeed.com/jobs?q=Data+Scientist&l=New+York%2C+York
-    
+
     return url
 
 
@@ -114,7 +111,7 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
     
     '''Extraction of job location'''
 
-    location = soup.title.text.split('-')[1].strip()
+    location = soup.title.text.split('-')[len(soup.title.text.split('-'))-2].strip()
     
     '''Extraction of dates'''
     for item in soup.find_all('div', attrs = {'class': 'jobsearch-JobMetadataFooter'}):
