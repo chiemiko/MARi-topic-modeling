@@ -83,7 +83,7 @@ def get_url(city, role):
         search_role = search_role + '+' + word
     search_role = search_role[1:len(search_role)]
     url = f'https://www.indeed.com/jobs?q={search_role}&l={location_string}'
-    print(url)
+    #print(url)
     #https://www.indeed.com/jobs?q=data+scientist&l=new+york%2C+new+york
     #https://www.indeed.com/jobs?q=Data+Scientist&l=New+York%2C+York
     
@@ -91,12 +91,53 @@ def get_url(city, role):
 
 
 def get_sub_urls(soup):
+    '''Extracting list of job post urls for each search'''
+    urls = []
     for item in soup.find_all('div', attrs={'class': 'title'}):
         for tag in item.find_all('a'):
-            print(tag.get('href'))
+            urls.append(tag.get('href'))
+    return urls
+
+def get_divs_from_sub_url(soup, company='', title= '', location='', post_date='', description=''):
+    '''Extract information from divs of soup object'''
+    
+    '''Extraction of Companies'''
+    for item in soup.find_all('div', attrs = {'class': 'jobsearch-CompanyAvatar-cta'}):
+        company = item.text[21:len(item.text)]
+
+    
+    '''Extraction of position titles
+    for item in soup1.find_all('h3', attrs = {'class': 'icl-u-xs-mb--xs icl-u-xs-mt--none jobsearch-JobInfoHeader-title'}):
+    print(item.text)'''
+    
+    title = soup.title.text.split('-')[0]
+    
+    '''Extraction of job location'''
+
+    location = soup.title.text.split('-')[1].strip()
+    
+    '''Extraction of dates'''
+    for item in soup.find_all('div', attrs = {'class': 'jobsearch-JobMetadataFooter'}):
+        #print(item.text.split('-'))
+        for item in item.text.split('-'):
+            if 'day' in item:
+                #print('date')
+                post_date = item.split()[0]
+                
+    '''Extraction of full job post'''
+
+    for item in soup.findAll('div', attrs={'class': 'jobsearch-jobDescriptionText'}):
+        for tag in item:
+            description = tag    
+    
+    return company, title, location, post_date, description
+
+
 
 
 if __name__ == '__main__':
+
+
 
     cities = ['San Francisco, California', 'Honolulu, Hawaii', 'New York, New York']
 
@@ -116,8 +157,42 @@ if __name__ == '__main__':
             url = get_url(city, role)
             print(url)
             soup = get_names(url)
-            print('technique 1 results: ')
-            get_divs(soup)  
-            print('technique 2 results: ')
-            get_divs2(soup)
+            urls = get_sub_urls(soup)
+
+            titles = []
+            post_dates = []
+            locations = []
+            companies = []
+            descriptions = []
+            full_urls = []
+
+            for item in urls:
+                
+                full_url = 'https://www.indeed.com' + item
+                full_urls.append(full_url)
+                soup = get_names(full_url)
+                
+
+                
+                
+                company, title, location, post_date, description = get_divs_from_sub_url(soup)
+                
+                
+                titles.append(title)
+                post_dates.append(post_date)
+                locations.append(location)
+                companies.append(company)
+                descriptions.append(description)
+
+            df = pd.DataFrame({
+            "company": companies,
+            "location": locations,
+            "title": titles,
+            "post_date": post_dates,
+            "description": descriptions
+            , "url": full_urls
+            })
+
+            print(df)
+                        
 
