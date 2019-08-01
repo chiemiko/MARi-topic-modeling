@@ -206,12 +206,10 @@ def get_linkedin_info(soup):
     "takes soup object and turns into LinkedIn full description"
     additional_info = {}
     full_desc = ''
-    for item in soup.find_all('p'):
-        #print(item)
-        #print()
-        full_desc = full_desc + item.text
-        full_desc = full_desc + ' \n'
-        #print(full_desc)
+    if soup.find_all('p'):
+        for item in soup.find_all('p'):
+            full_desc = full_desc + item.text
+            full_desc = full_desc + ' \n'
     
     additional_info['full_desc'] = full_desc
 
