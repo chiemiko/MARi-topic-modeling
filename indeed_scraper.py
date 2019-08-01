@@ -122,13 +122,20 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
             elif 'day' in item:
                 post_date = item.split()[0]
                             
+                
     '''Extraction of full job post'''
-    description = []
+    list_desc = []
+    description = ''
     for item in soup.findAll('div', attrs={'class': 'jobsearch-jobDescriptionText'}):
         for tag in item:
 
-            description.append(tag)
-   
+            list_desc.append(tag)
+            
+        '''To take out all of the tags'''
+        for i, item in enumerate(list_desc):
+            sub = re.sub(r'<\w*>', '', str(item))
+            sub = re.sub(r'</\w*>', '', sub)
+            description = description + ' \n ' + sub
     
     return company, title, location, post_date, description
 
