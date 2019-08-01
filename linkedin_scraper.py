@@ -244,18 +244,20 @@ if __name__ == '__main__':
               'Honolulu, Hawaii']
     
     roles = ['Data Scientist',
-    'Data Analyst']
-    #'Business Analyst',
-    #'Business Intelligence',
-    #'Data Engineer',
-    #'Machine Learning Engineer',
-    #'Machine Learning Scientist',
-    #'Artificial Intelligence Researcher',
-    #'Statistical Modeler']
+    'Data Analyst',
+    'Business Analyst',
+    'Business Intelligence',
+    'Data Engineer',
+    'Machine Learning Engineer',
+    'Machine Learning Scientist',
+    'Artificial Intelligence Researcher',
+    'Statistical Modeler']
 
-    df_main = pd.DataFrame()
-    for city in cities:
-        for role in roles:
+    
+    for role in roles:
+        df_main = pd.DataFrame()
+        for city in cities:
+        
             url =get_url(city, role)
             print(url)
             soup = get_names(url)
@@ -269,5 +271,5 @@ if __name__ == '__main__':
             print(df_main.shape)
 
         
-    # save to csv
-    df_main.to_csv('data/linkedin-' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
+        # save to csv
+        df_main.to_csv('data/linkedin-' + role +' ' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)

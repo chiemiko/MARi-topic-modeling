@@ -161,14 +161,14 @@ if __name__ == '__main__':
               'Honolulu, Hawaii']
 
     roles = ['Data Scientist',
-    'Data Analyst']
-    #'Business Analyst',
-    #'Business Intelligence',
-    #'Data Engineer',
-    #'Machine Learning Engineer',
-    #'Machine Learning Scientist',
-    #'Artificial Intelligence Researcher',
-    #'Statistical Modeler']
+            'Data Analyst',
+            'Business Analyst',
+            'Business Intelligence',
+            'Data Engineer',
+            'Machine Learning Engineer',
+            'Machine Learning Scientist',
+            'Artificial Intelligence Researcher',
+            'Statistical Modeler']
 
     
     for i, role in enumerate(roles):
