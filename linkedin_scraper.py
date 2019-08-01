@@ -234,8 +234,15 @@ def get_linkedin_info(soup):
             
 if __name__ == '__main__':
 
-    cities = ['San Francisco, California', 'Honolulu, Hawaii', 'New York, New York']
-
+    cities = ['San Francisco,California',
+              'New York, New York',
+              'Seattle, Washington',
+              'Washington, DC',
+              'Chicago, Illinois',
+              'Atlanta, Georgia',
+              'Portland, Oregon',
+              'Honolulu, Hawaii']
+    
     roles = ['Data Scientist',
     'Data Analyst']
     #'Business Analyst',
@@ -263,4 +270,4 @@ if __name__ == '__main__':
 
         
     # save to csv
-    df_main.to_csv('data/linkedin/' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
+    df_main.to_csv('data/linkedin-' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)

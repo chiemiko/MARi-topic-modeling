@@ -116,8 +116,10 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
     for item in soup.find_all('div', attrs = {'class': 'jobsearch-JobMetadataFooter'}):
         #print(item.text.split('-'))
         for item in item.text.split('-'):
-            if 'today' in item or 'minute' in item or 'hour' in item or 'just posted' in item:
+            if 'today' in item or 'minute' in item or 'hour' in item:
                 post_date = '0'
+            elif 'just posted' in item:
+                post_date='0'
             
             elif 'day' in item:
                 post_date = item.split()[0]
@@ -149,7 +151,14 @@ if __name__ == '__main__':
 
 
 
-    cities = ['San Francisco, California', 'Honolulu, Hawaii', 'New York, New York']
+    cities = ['San Francisco,California',
+              'New York, New York',
+              'Seattle, Washington',
+              'Washington, DC',
+              'Chicago, Illinois',
+              'Atlanta, Georgia',
+              'Portland, Oregon',
+              'Honolulu, Hawaii']
 
     roles = ['Data Scientist',
     'Data Analyst']
@@ -161,9 +170,11 @@ if __name__ == '__main__':
     #'Artificial Intelligence Researcher',
     #'Statistical Modeler']
 
-    df_main = pd.DataFrame()
-    for city in cities:
-        for role in roles:
+    
+    for i, role in enumerate(roles):
+        df_main = pd.DataFrame()
+        for city in cities:
+        
             url = get_url(city, role)
             print(url)
             soup = get_names(url)
@@ -210,6 +221,6 @@ if __name__ == '__main__':
             frames = [df_main, df]
             df_main = pd.concat(frames)
 
-    df_main.to_csv('data/indeed-' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
+        df_main.to_csv('data/indeed-'+role+' ' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
                         
 
