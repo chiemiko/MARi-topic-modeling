@@ -263,4 +263,4 @@ if __name__ == '__main__':
 
         
     # save to csv
-    df_main.to_csv('data/' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
+    df_main.to_csv('data/linkedin/' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)

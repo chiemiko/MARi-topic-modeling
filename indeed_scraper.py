@@ -96,7 +96,7 @@ def get_sub_urls(soup):
             urls.append(tag.get('href'))
     return urls
 
-def get_divs_from_sub_url(soup, company='', title= '', location='', post_date='', description=''):
+def get_divs_from_sub_url(soup, company='', title= '', location='', post_date='', salary='', description=''):
     '''Extract information from divs of soup object'''
     
     '''Extraction of Companies'''
@@ -121,7 +121,10 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
             
             elif 'day' in item:
                 post_date = item.split()[0]
-                            
+
+    '''Salary'''
+    for item in soup.find_all('span', attrs = {'class': "icl-u-xs-mr--xs"}):
+        salary = (item.text)            
                 
     '''Extraction of full job post'''
     list_desc = []
@@ -137,7 +140,7 @@ def get_divs_from_sub_url(soup, company='', title= '', location='', post_date=''
             sub = re.sub(r'</\w*>', '', sub)
             description = description + ' \n ' + sub
     
-    return company, title, location, post_date, description
+    return company, title, location, post_date, salary, description
 
 
 
@@ -170,6 +173,7 @@ if __name__ == '__main__':
             post_dates = []
             locations = []
             companies = []
+            salaries = []
             descriptions = []
             full_urls = []
 
@@ -182,13 +186,14 @@ if __name__ == '__main__':
 
                 
                 
-                company, title, location, post_date, description = get_divs_from_sub_url(soup)
+                company, title, location, post_date, salary, description = get_divs_from_sub_url(soup)
                 
                 
                 titles.append(title)
                 post_dates.append(post_date)
                 locations.append(location)
                 companies.append(company)
+                salaries.append(salary)
                 descriptions.append(description)
 
             df = pd.DataFrame({
@@ -196,6 +201,7 @@ if __name__ == '__main__':
             "location": locations,
             "title": titles,
             "post_date": post_dates,
+            "salary": salaries,
             "description": descriptions
             , "url": full_urls
             })
