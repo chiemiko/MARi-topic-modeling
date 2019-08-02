@@ -38,20 +38,20 @@ def get_names(url):
     
     try:
         with closing(get(url, stream=True)) as resp:
-            if is_good_response(resp):
-                response = resp.content
+            #if is_good_response(resp):
+            response = resp.content
                 
                 
-                if response is not None:
-                    html = BeautifulSoup(response, 'lxml')
-                    #print(html)
-                    return html
-                # Raise an exception if we failed to get any data from the url
-                #raise Exception('Error retrieving contents at {}'.format(url))
+            if response is not None:
+                html = BeautifulSoup(response, 'lxml')
+                #print(html)
+                return html
+            # Raise an exception if we failed to get any data from the url
+            #raise Exception('Error retrieving contents at {}'.format(url))
 
                 
-            else:
-                pass
+            #else:
+             #   pass
 
     except RequestException as e:
         # MAIN ERROR? 
@@ -173,22 +173,22 @@ def add_full_desc(df):
         info = get_linkedin_info(soup)
         full_job_desc.append(info['full_desc'])
                     
-        if info['Seniority level'] is not None:
+        if 'Seniority level' in info.keys():
             seniority_level.append(info['Seniority level'])
         else:
             seniority_level.append('NA')
                 
-        if info['Employment type'] is not None:
+        if 'Employment type' in info.keys():
             employment_type.append(info['Employment type'])
         else:
             employment_type.append('NA')
                 
-        if info['Job function'] is not None:
+        if 'Job function' in info.keys():
             job_function.append(info['Job function'])
         else:
             job_function.append('NA')
                 
-        if info['Industries'] is not None:
+        if 'Industries' in info.keys():
             industries.append(info['Industries'])
         else:
             industries.append('NA')
