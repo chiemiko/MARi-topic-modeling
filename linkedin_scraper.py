@@ -165,7 +165,8 @@ def add_full_desc(df):
     employment_type = []
     job_function = []
     industries = []
-            
+
+    # iterates over list of urls from urls column in df
     for index, row in df.iterrows():
         soup = get_names(row[5])
                 
@@ -207,7 +208,7 @@ def get_linkedin_info(soup):
     additional_info = {}
     full_desc = ''
     if soup.find_all('p'):
-        for item in soup.find_all('p'):
+        for item in soup.find_all("div", {"class": "description__text"}):
             full_desc = full_desc + item.text
             full_desc = full_desc + ' \n'
     
@@ -247,27 +248,35 @@ if __name__ == '__main__':
     'Business Intelligence',
     'Data Engineer',
     'Machine Learning Engineer',
-    'Machine Learning Scientist',
+    'ML Engineer',
     'Artificial Intelligence Researcher',
-    'Statistical Modeler']
+    'Statistical Modeler',
+    'Researcher',
+    'Research Intern',
+    'Software Engineer',
+    'Full Stack Engineer',
+    'Computer Vision Engineer',
+    'Risk Analyst']
 
+    df_main = pd.DataFrame()
     
     for role in roles:
-        df_main = pd.DataFrame()
         for city in cities:
         
             url =get_url(city, role)
             print(url)
             soup = get_names(url)
             df = get_divs(soup)
-            
             df = add_full_desc(df)
-            
+            df['search_role'] = len(df.index)*[role]
+
+
+            print(df)
+
             frames = [df_main, df]
-            result = pd.concat(frames)
-            df_main = result
-            print(df_main.shape)
+            df_main = pd.concat(frames)
+            #print(df_main.shape)
 
         
-        # save to csv
-        df_main.to_csv('data/linkedin-' + role +' ' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
+    # save to csv
+    df_main.to_csv('data/linkedin-' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)

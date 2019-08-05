@@ -166,13 +166,18 @@ if __name__ == '__main__':
             'Business Intelligence',
             'Data Engineer',
             'Machine Learning Engineer',
-            'Machine Learning Scientist',
+            'ML Engineer',
             'Artificial Intelligence Researcher',
-            'Statistical Modeler']
+            'Statistical Modeler',
+            'Researcher',
+            'Research Intern',
+            'Software Engineer',
+            'Full Stack Engineer',
+            'Computer Vision Engineer',
+            'Risk Analyst']
 
-    
+    df_main = pd.DataFrame()   
     for i, role in enumerate(roles):
-        df_main = pd.DataFrame()
         for city in cities:
         
             url = get_url(city, role)
@@ -187,6 +192,7 @@ if __name__ == '__main__':
             salaries = []
             descriptions = []
             full_urls = []
+            
 
             for item in urls:
                 
@@ -194,7 +200,6 @@ if __name__ == '__main__':
                 full_urls.append(full_url)
                 soup = get_names(full_url)
                 
-
                 
                 
                 company, title, location, post_date, salary, description = get_divs_from_sub_url(soup)
@@ -217,10 +222,12 @@ if __name__ == '__main__':
             , "url": full_urls
             })
 
+            df['search_role'] = len(df.index)*[role]
+
             print(df)
             frames = [df_main, df]
             df_main = pd.concat(frames)
 
-        df_main.to_csv('data/indeed-'+role+' ' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
+        df_main.to_csv('data/indeed-' +str(datetime.now().month) + '-' + str(datetime.now().day) + '.csv', index=False)
                         
 
