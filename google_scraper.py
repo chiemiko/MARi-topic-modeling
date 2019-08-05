@@ -2,16 +2,13 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-from datetime import datetime
 import urllib.request
 
 import pandas as pd
 
 
-
 class AppURLopener(urllib.request.FancyURLopener):
     version = "Mozilla/5.0"
-
 
 
 def is_good_response(resp):
@@ -33,18 +30,15 @@ def log_error(e):
 
 def get_names(url):
     """
-    Downloads the LinkedIn page to create a beautiful soup object with html information
+    Downloads the Google page to create a beautiful soup object with html information
     """
     
     try:
         with closing(get(url, stream=True)) as resp:
             if is_good_response(resp):
                 response = resp.content
-                
-                
                 if response is not None:
                     html = BeautifulSoup(response, 'lxml')
-                    #print(html)
                     return html
                 # Raise an exception if we failed to get any data from the url
                 #raise Exception('Error retrieving contents at {}'.format(url))
