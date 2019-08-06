@@ -110,9 +110,9 @@ def get_divs(soup):
     for item in soup.find_all('time'):
         post_dates.append(item.get('datetime'))
 
-    '''Extract descriptions'''
-    for item in soup.find_all('p', attrs={'class': 'jobs-description-content__text'}):
-        descriptions.append(item.text)
+    #'''Extract descriptions'''
+    #for item in soup.find_all('p', attrs={'class': 'jobs-description-content__text'}):
+        #descriptions.append(item.text)
 
     '''Extract urls'''
     for item in soup.find_all('a', href=True):
@@ -126,7 +126,7 @@ def get_divs(soup):
         "location": locations,
         "title": titles,
         "post_date": post_dates,
-        "description": descriptions,
+        #"description": descriptions,
         "url": urls
     })
 
@@ -144,7 +144,7 @@ def add_full_desc(df):
 
     # iterates over list of urls from urls column in df
     for index, row in df.iterrows():
-        soup = get_names(row[5])
+        soup = get_names(row[4])
 
         '''Extracting job post body'''
         info = get_linkedin_info(soup)
@@ -247,7 +247,7 @@ if __name__ == '__main__':
 
             frames = [df_main, df]
             df_main = pd.concat(frames)
-            #print(df_main.shape)
+            print(df_main.shape)
 
         
     # save to csv
