@@ -247,7 +247,6 @@ if __name__ == '__main__':
 
             frames = [df_main, df]
             df_main = pd.concat(frames)
-            print(df_main.shape)
 
         
     # save to csv
