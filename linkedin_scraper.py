@@ -206,7 +206,7 @@ def get_linkedin_info(soup):
 
 
 if __name__ == '__main__':
-    cities = ['San Francisco,California',
+    cities = ['San Francisco, California',
               'New York, New York',
               'Seattle, Washington',
               'Washington, DC',

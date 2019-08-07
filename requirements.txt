@@ -21,6 +21,7 @@ entrypoints==0.3
 funcy==1.13
 future==0.17.1
 gensim==3.8.0
+glob3==0.0.1
 idna==2.8
 importlib-metadata==0.19
 ipykernel==5.1.1
