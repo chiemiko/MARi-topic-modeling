@@ -187,6 +187,8 @@ def get_linkedin_info(soup):
         for item in soup.find_all("div", {"class": "description__text"}):
             full_desc = full_desc + item.text
             full_desc = full_desc + ' \n'
+    else:
+        full_desc = 'NA'
 
     additional_info['full_desc'] = full_desc
 

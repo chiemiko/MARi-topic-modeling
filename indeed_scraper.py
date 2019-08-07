@@ -97,11 +97,18 @@ def get_sub_urls(soup):
     return urls
 
 
-def get_divs_from_sub_url(soup):
+def get_divs_from_sub_url(soup, title = '', location = '', post_date = '', salary = '', description='', company=''):
     """Extract information from divs of soup object"""
     '''Extraction of Companies'''
-    for item in soup.find_all('div', attrs={'class': 'jobsearch-CompanyAvatar-cta'}):
-        company = item.text[21:len(item.text)]
+    
+    if soup.find_all('div', attrs={'class': 'jobsearch-CompanyAvatar-cta'}) is None:
+        company = 'NA'
+        
+    else:
+        for item in soup.find_all('div', attrs={'class': 'jobsearch-CompanyAvatar-cta'}):
+            company = item.text[21:len(item.text)]
+
+        
 
     '''Extraction of position titles'''
     title = soup.title.text.split('-')[0]
@@ -136,6 +143,8 @@ def get_divs_from_sub_url(soup):
         for i, item in enumerate(list_desc):
             sub = re.sub(r'<\w*>', '', str(item))
             sub = re.sub(r'</\w*>', '', sub)
+            sub = re.sub(r'</\w*>', '', sub)
+
             description = description + ' \n ' + sub
 
     return company, title, location, post_date, salary, description
@@ -150,6 +159,8 @@ if __name__ == '__main__':
               'Atlanta, Georgia',
               'Portland, Oregon',
               'Honolulu, Hawaii']
+    
+    
     roles = ['Data Scientist',
             'Data Analyst',
             'Business Analyst',
@@ -165,6 +176,7 @@ if __name__ == '__main__':
             'Full Stack Engineer',
             'Computer Vision Engineer',
             'Risk Analyst']
+   
 
     df_main = pd.DataFrame()   
 
