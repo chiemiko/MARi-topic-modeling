@@ -8,5 +8,7 @@ linkedin_scrape_trials.ipynb
 .ipynb_checkpoints/linkedin_scrape_trials-checkpoint.ipynb
 SpaCy Tutorial.ipynb
 .ipynb_checkpoints/SpaCy Tutorial-checkpoint.ipynb
-Topic Modeling Practice.ipynb
 .ipynb_checkpoints/Topic Modeling Practice-checkpoint.ipynb
+corpus.pkl
+venv/.Python
+venv_notes.txt
