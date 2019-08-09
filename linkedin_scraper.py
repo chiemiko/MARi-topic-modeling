@@ -242,6 +242,7 @@ if __name__ == '__main__':
             df = get_divs(soup)
             df = add_full_desc(df)
             df['search_role'] = len(df.index)*[role]
+            df['search_city'] = len(df.index)*[city]
 
             print(df)
 

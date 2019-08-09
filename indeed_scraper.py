@@ -222,6 +222,7 @@ if __name__ == '__main__':
             })
 
             df['search_role'] = len(df.index)*[role]
+            df['search_city'] = len(df.index)*[city]
 
             print(df)
             frames = [df_main, df]
