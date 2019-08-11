@@ -101,13 +101,13 @@ def get_divs_from_sub_url(soup, title = '', location = '', post_date = '', salar
     """Extract information from divs of soup object"""
     '''Extraction of Companies'''
     
-    if soup.find_all('div', attrs={'class': 'jobsearch-CompanyAvatar-cta'}) is None:
-        company = 'NA'
-        
-    else:
+    if soup.find_all('div', attrs={'class': 'jobsearch-CompanyAvatar-cta'}):
         for item in soup.find_all('div', attrs={'class': 'jobsearch-CompanyAvatar-cta'}):
             company = item.text[21:len(item.text)]
-
+        
+        
+    else:
+        company = 'NA'
         
 
     '''Extraction of position titles'''
