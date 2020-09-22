@@ -31,30 +31,29 @@ def preprocess_nlp(text):
     lem = WordNetLemmatizer()
     tokenized_text=word_tokenize(text)
     tokenized_text = [lem.lemmatize(word.lower(),"v") for word in tokenized_text if (word not in STOPWORDS) & (len(word)>2)]
-    return dict(Counter(tokenized_text).most_common(30))
+    return dict(Counter(tokenized_text).most_common(40))
   
 df = pd.read_csv('../data/processed/concatenated_data_cleaned_labeled_preprocessed_alt.csv') 
 
-def make_plots0(resume_text, df):
+def make_plots0(resume_text, df, filename):
 
     resume_counts = preprocess_nlp(resume_text)
-    resume_counts.pop('2019')
-    resume_counts.pop('2020')
-
+    # for word in ['2018', '2019', '2020']:
+    #     resume_counts.pop(word)
     all_counts = Counter(''.join(df['new_description'].to_list()).split() )
 
     subset_counts = { k:v for k, v in all_counts.items() if k in resume_counts.keys() }
     counts_df = pd.DataFrame(zip(resume_counts.keys() , resume_counts.values() ), columns = ['word', 'count'])
     counts_df['source'] = 'resume'
     concat_all = pd.DataFrame(zip(subset_counts.keys() , subset_counts.values() ), columns = ['word', 'count'])
-    concat_all['source'] = 'scraped_data'
+    concat_all['source'] = 'training_data'
 
     final_df = pd.concat([counts_df, concat_all]).reset_index(drop=True)
-    sum_all_data = -1*sum( final_df[final_df.source == 'scraped_data' ]['count'] ) 
+    sum_all_data = -1*sum( final_df[final_df.source == 'training_data' ]['count'] ) 
 
 
     sum_res_data = sum( final_df[final_df.source == 'resume' ]['count'] ) 
-    final_df.loc[final_df['source'] == 'scraped_data', 'count_norm'] = final_df['count']/sum_all_data
+    final_df.loc[final_df['source'] == 'training_data', 'count_norm'] = final_df['count']/sum_all_data
     final_df.loc[final_df['source'] == 'resume', 'count_norm'] = final_df['count']/sum_res_data
 
     fig = px.bar(
@@ -68,7 +67,7 @@ def make_plots0(resume_text, df):
             hover_data="",
         )
 
-    fig.update_layout(title_text='Top 30 Words in Resume: Frequency Comparisons', 
+    fig.update_layout(title_text=f'Word Frequency Comparisons: "{filename}"', 
                     xaxis_tickangle=80,
                         yaxis=dict(
             title='Word Frequency (normalized)',
@@ -77,19 +76,9 @@ def make_plots0(resume_text, df):
 
     return fig
 
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-# df = pd.DataFrame({
-#     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-#     "Amount": [4, 1, 2, 2, 4, 5],
-#     "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-# })
-
-# fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
-
 def plotly_wordcloud(string):
-    """A wonderful function that returns figure data for three equally
-    wonderful plots: wordcloud, frequency histogram and treemap"""
+    """Helper function from Plotly
+    https://github.com/plotly/dash-sample-apps/blob/master/apps/dash-nlp/app.py"""
 
     word_cloud = WordCloud(stopwords=set(STOPWORDS), max_words=100, max_font_size=90)
     word_cloud.generate(string.lower())
@@ -109,14 +98,12 @@ def plotly_wordcloud(string):
         orientation_list.append(orientation)
         color_list.append(color)
 
-    # get the positions
     x_arr = []
     y_arr = []
     for i in position_list:
         x_arr.append(i[0])
         y_arr.append(i[1])
 
-    # get the relative occurence frequencies
     new_freq_list = []
     for i in freq_list:
         new_freq_list.append(i * 80)
@@ -183,7 +170,7 @@ def img_to_text(image_location):
     text=pytesseract.image_to_string(img)
     return text
 
-def make_first_graphs():
+def make_plots1():
     return html.Div(
         style={ "padding": "10px"},
         children=[
@@ -221,7 +208,7 @@ def make_first_graphs():
     ], className="row")
 
 
-def make_graphs2():
+def make_plots2():
     return html.Div(
             children=[
                 html.Div([
@@ -230,15 +217,14 @@ def make_graphs2():
                 ])
 
 # initialize first resume eval
-filename = 'Chiemi Kato.png'
-chiemi_new = img_to_text(filename)
-wordcloud, frequency_figure, treemap = plotly_wordcloud(chiemi_new)
+filename = 'example.png'
+example_resume = img_to_text(filename)
+wordcloud, frequency_figure, treemap = plotly_wordcloud(example_resume)
 
-fig = make_plots0(chiemi_new, df)
-
+fig = make_plots0(example_resume, df, filename)
 
 WORDCLOUD_PLOTS = [
-    dbc.CardHeader(html.H5("Most frequently used words in complaints")),
+    dbc.CardHeader(html.H6(f'Top words in "{filename}"')),
     dbc.CardBody(
         [
             dbc.Row(
@@ -288,73 +274,72 @@ WORDCLOUD_PLOTS = [
     ),
 ]
 
-
-
 app.layout = html.Div(
     style={"background": "#fff8c7", "padding": "30px"},
     children=[
         html.Div(
             style={"background": "#ffffff", "padding": "20px",},
             children=[
-                html.H1(children='NLP Classification Project: Resume Scanner and Job Recommender'),
+                html.H1(children='NLP Classification Project'),
+
+                html.H4(children='Resume Scanner and Job Recommender'),
                 html.P(
                     style={"font-size": "18px"},
                     children='''A natural language processing recommendation app
-                    curated for data-focused roles. 
-
-                    Users can see what data job the trigrams LDA model recommends based on the text in their resume.
-                    
-                    The model used for the recommendations is a
-                    trigrams Latent Direchlet Model made from webscraped data from LinkedIn, Indeed, and Google Jobs.
-                    
-                    '''),
+                    curated for data-focused roles. Users can see what data job the NLP model 
+                    recommends by uploading their resume below (NOTE: must be .png format).''')
                 ]),
-        make_first_graphs(),
-        make_graphs2()
+        make_plots1(),
+        make_plots2()
     ]
 )
 
 
 def parse_contents(contents, filename, date):
     im = Image.open(BytesIO(base64.b64decode(contents.split(',')[1])))
-
     text = pytesseract.image_to_string(im)
-    wordcloud, frequency_figure, treemap = plotly_wordcloud(text)
     # im = Image.open(BytesIO(base64.b64decode(contents)))
 
     clf =  pickle.load( open( "../models/trigram_model.pkl", "rb" ) )
     cv =  pickle.load( open( "../models/count_vectorizer.pkl", "rb" ) )
-
-    # print('Predicted Role Label: ', clf.predict(cv.transform([text])))
+    pred_result = clf.predict(cv.transform([text]))[0]
 
     return html.Div([
-        html.H6(f'NLP Model suggests: {clf.predict(cv.transform([text]))[0]}'),
-
-        # HTML images accept base64 encoded strings in the same format
-        # that is supplied by the upload
+        html.H6(f'NLP Model suggests: {pred_result}'),
         html.Img(src=contents, style={'width':'100%'}),
-        html.H5(filename),
-        # html.Div('Raw Content'),
-        # html.P(contents)
-    ]) , [wordcloud, frequency_figure, treemap]
+    ]) , text
+
+def plot_wordcloud_treemap(text):
+    wordcloud, frequency_figure, treemap = plotly_wordcloud(text)
+    return wordcloud, frequency_figure, treemap
 
 
-@app.callback([
+@app.callback(
             Output('output-image-upload', 'children'),
-             Output("bank-wordcloud", "figure"),
-            Output("frequency_figure", "figure"),
-            Output("bank-treemap", "figure"),
-            ],
-
               [Input('upload-image', 'contents')],
               [State('upload-image', 'filename'),
                State('upload-image', 'last_modified')])
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
-        children = parse_contents(list_of_contents, list_of_names, list_of_dates)
-        # new_resume = img_to_text(filename)
-        # wordcloud, frequency_figure, treemap = plotly_wordcloud(chiemi_new)
-        return [children[0], children[1][0], children[1][1], children[1][2]]
+        children, text = parse_contents(list_of_contents, list_of_names, list_of_dates)
+        return children
 
+@app.callback(
+            [Output("bank-wordcloud", "figure"),
+            Output("frequency_figure", "figure"),
+            Output("bank-treemap", "figure")],
+
+            [Input('upload-image', 'contents')],
+            [State('upload-image', 'filename'),
+            State('upload-image', 'last_modified')])
+def update_wordcloud_treemap_output(list_of_contents, list_of_names, list_of_dates):
+    if list_of_contents is not None:
+        children, text = parse_contents(list_of_contents, list_of_names, list_of_dates)
+        wordcloud, frequency_figure, treemap = plot_wordcloud_treemap(text)
+        return [wordcloud, frequency_figure, treemap]
+    else:
+        wordcloud, frequency_figure, treemap = plotly_wordcloud(example_resume)
+        return [wordcloud, frequency_figure, treemap]
 if __name__ == '__main__':
     app.run_server(debug=True)
+
