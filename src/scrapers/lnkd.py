@@ -147,7 +147,7 @@ def main_fx():
                 
                 '''Extracting job post body'''
                 info = get_linkedin_info(soup)
-                full_job_desc.append(info['full_desc'])
+                full_job_desc.append(info['new_description'])
 
                 if 'Seniority level' in info.keys():
                     seniority_level.append(info['Seniority level'])
@@ -175,7 +175,7 @@ def main_fx():
                 job_function.append(None)
                 industries.append(None)
 
-        df['full_desc'] = full_job_desc
+        df['new_description'] = full_job_desc
         df['seniority_level'] = seniority_level
         df['employment_type'] = employment_type
         df['job_function'] = job_function
@@ -192,7 +192,7 @@ def main_fx():
                 full_desc = full_desc + ' \n'
         else:
             full_desc = 'NA'
-        additional_info['full_desc'] = full_desc
+        additional_info['new_description'] = full_desc
 
         '''Extracting Additional Categories from LinkedIn Post'''
         for item in soup.find_all('h3', attrs={'class': 'job-criteria__subheader'}):

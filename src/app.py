@@ -49,7 +49,7 @@ def plot_word_freq_comparison(resume_text, df, filename):
 
     resume_counts = preprocess_nlp(resume_text)
     all_counts = Counter(''.join(df['new_description'].to_list()).split() )
-
+    
     subset_counts = { k:v for k, v in all_counts.items() if k in resume_counts.keys() }
     counts_df = pd.DataFrame(zip(resume_counts.keys() , resume_counts.values() ), columns = ['word', 'count'])
     counts_df['source'] = 'resume'
@@ -232,7 +232,8 @@ def make_plots2():
                 ])
 
 # initialize first resume eval
-df = pd.read_csv('resources/data_preprocessed_alt.csv') 
+# df = pd.read_csv('resources/data_preprocessed_alt.csv')
+df = pd.read_csv('resources/linkedin-10-9-raw.csv')
 
 filename = 'example.png'
 example_resume = img_to_text(filename)
